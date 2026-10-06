@@ -153,12 +153,44 @@ export interface FollowUp {
   answer: string[];
 }
 
+/** Plain-language primer shown at the top of Stage 1, before the interview question. */
+export interface Overview {
+  /** One or two sentences a non-expert could follow */
+  whatItIs: string;
+  /** What the system actually does / changes in the world, as short bullets */
+  whatItDoes: string[];
+  /** Real products or situations where you meet it */
+  whereUsed: string[];
+  /** The single idea everything else hangs off */
+  coreIdea: string;
+  /** Look-alikes people mix it up with */
+  notToBeConfusedWith?: Array<{ term: string; difference: string }>;
+}
+
+/** How one interaction should travel: a direct call (sync API) or through a queue (async messaging). */
+export interface CommunicationChoice {
+  interaction: string;
+  style: "sync-api" | "async-queue" | "hybrid";
+  why: string;
+  /** What goes wrong if you pick the other style */
+  ifWrong: string;
+}
+
+/** Shown in Stage 3: which interactions are request/response and which go through a queue. */
+export interface CommunicationGuide {
+  /** The rule of thumb for this problem, one or two sentences */
+  rule: string;
+  choices: CommunicationChoice[];
+}
+
 export interface Problem {
   slug: string;
   title: string;
   tagline: string;
   difficulty: "Easy" | "Medium" | "Hard";
   // Stage 1
+  /** Optional plain-language primer (what it is, what it does, where it's used) */
+  overview?: Overview;
   interviewQuestion: string;
   clarifyingQuestions: ClarifyingQuestion[];
   requirements: Requirements;
@@ -166,6 +198,8 @@ export interface Problem {
   estimates: Estimate[];
   // Stage 3
   api: ApiEndpoint[];
+  /** Optional: API vs messaging-queue guidance per interaction */
+  communication?: CommunicationGuide;
   dataModel: DataModel[];
   v1: {
     title: string;

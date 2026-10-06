@@ -1,8 +1,11 @@
 import type { Problem, ProblemSummary } from "./types";
 import { urlShortener } from "./problems/url-shortener";
+import { rateLimiter } from "./problems/rate-limiter";
+import { phoneDirectory } from "./problems/phone-directory";
+import { webCrawler } from "./problems/web-crawler";
 
 /** Fully written problems. To add one: create problems/<slug>/index.ts and add it here. */
-const problems: Problem[] = [urlShortener];
+const problems: Problem[] = [urlShortener, rateLimiter, phoneDirectory, webCrawler];
 
 const planned: Array<Omit<ProblemSummary, "status">> = [
   { slug: "rate-limiter", title: "Rate Limiter", tagline: "Token buckets, distributed counters, and fairness under contention", difficulty: "Medium" },

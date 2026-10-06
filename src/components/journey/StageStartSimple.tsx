@@ -56,6 +56,32 @@ export function StageStartSimple({ problem }: { problem: Problem }) {
         </Card>
       ))}
 
+      {problem.communication && (
+        <>
+          <h3 className="mb-1 mt-8 font-semibold text-stone-800">API call or message queue?</h3>
+          <p className="mb-3 text-sm text-stone-600">{problem.communication.rule}</p>
+          <div className="grid gap-3 md:grid-cols-2">
+            {problem.communication.choices.map((c) => {
+              const tag = {
+                "sync-api": { text: "Sync API", cls: "bg-indigo-100 text-indigo-700" },
+                "async-queue": { text: "Queue / async", cls: "bg-amber-100 text-amber-800" },
+                hybrid: { text: "Hybrid", cls: "bg-emerald-100 text-emerald-700" },
+              }[c.style];
+              return (
+                <Card key={c.interaction} className="!p-4">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="font-medium text-stone-800">{c.interaction}</div>
+                    <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${tag.cls}`}>{tag.text}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-stone-700">{c.why}</p>
+                  <p className="mt-2 text-sm text-stone-500"><span className="font-medium text-red-600">If you pick the other: </span>{c.ifWrong}</p>
+                </Card>
+              );
+            })}
+          </div>
+        </>
+      )}
+
       <div className="mt-8 rounded-xl border-2 border-dashed border-red-300 bg-red-50/50 p-5">
         <div className="mb-2 text-lg font-semibold text-red-700">What breaks first as we grow?</div>
         <ol className="list-decimal space-y-1 pl-5 text-stone-700">{v1.whatBreaksFirst.map((w) => <li key={w}>{w}</li>)}</ol>

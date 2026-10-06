@@ -6,6 +6,7 @@ Teaching app for system design interviews. It teaches design *reasoning*: why ea
 - `npm run dev`: dev server at http://localhost:3000
 - `npm run build`: production build (run before claiming work is done)
 - `npm run typecheck`: `tsc --noEmit`
+- There is no test runner or linter. Verification is `typecheck` + `build` (the build prerenders every ready problem via `generateStaticParams`, so a malformed problem fails it).
 
 ## Stack
 Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, config in `src/app/globals.css`) + `@xyflow/react` v12 + framer-motion + mermaid. shadcn/ui is **not** installed. Small Tailwind primitives live in `src/components/ui/primitives.tsx`. Light theme only (stone/indigo palette).
@@ -13,6 +14,7 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 ## Architecture
 - **Content is pure data.** `src/content/types.ts` defines the `Problem` schema. Each problem is `src/content/problems/<slug>/index.ts` and is registered in `src/content/registry.ts`. Adding a problem must never require UI changes.
 - **Diagram evolution:** `v1.diagram` is the start. Each `evolution[i].delta` adds/removes/updates nodes and edges. `lib/diagram.ts#diagramAt(problem, n)` computes the diagram after n steps and which ids changed (used for NEW/CHANGED highlighting).
+- **Optional teaching sections** (both rendered only when present, so older problems still work): `overview` (plain-language primer: what it is, what it does, where it's used, the core idea; shown at the top of Stage 1) and `communication` (per-interaction verdict of sync API vs queue vs hybrid, with "if you pick the other"; shown in Stage 3 after the API list). New problems should fill both.
 - **Flows** run on the final diagram. Every hop with `to` must follow an existing edge (either direction, and `edgeForHop` handles reversal). A hop without `to` is local processing at `from`. A hop with `failure: true` renders red. The UI shows a "Content warning" if an edge is missing.
 - **Node positions** are hand-placed x/y in content (no auto-layout). Edges are custom "floating" straight lines between node borders (`components/diagram/ArchDiagram.tsx`), and packets animate via SVG `animateMotion`.
 - **Sequence view:** `lib/mermaid.ts` generates a Mermaid sequence diagram from flow hops. It is rendered client-side in `MermaidView.tsx`.
@@ -24,10 +26,11 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 - Every estimate ends with a "so what" design implication.
 - Each evolution step: problem → evidence → options → decision → new risks + mitigations → "say it" line.
 - Flows include write, read, and failure paths (node death, stampede, region loss, duplicate processing).
+- `communication` must say, per interaction, whether it is a sync call or a queue and why. Rule used so far: if the caller is blocked on the answer, or the callee isn't ours, it's a sync call with a deadline; if work is handed to a different-speed stage, it's a queue. Say so explicitly when something that looks like a queue isn't one (e.g. the crawler's URL frontier).
 
 ## Build order & status
 1. ✅ App shell + journey viewer + **URL Shortener** fully written (7 evolution steps v1→v7, 7 flows, 3 deep dives, trade-offs, follow-ups, mistakes). **Awaiting user review of teaching quality before continuing.**
-2. ⏳ Rate Limiter, Phone Directory, Video Streaming (listed as "planned" in the registry).
+2. ✅ Rate Limiter, Phone Directory, Web Crawler written (with `overview` + `communication`). **Awaiting user review of teaching quality and visual check of diagrams.** Video Streaming is still "planned".
 3. ⏳ Framework page, Building Blocks, Decision Trees, Scaling Cheat Sheet.
 4. ⏳ Practice mode (reveal-one-stage, drag-and-drop canvas, self-review checklist).
 5. ⏳ Remaining problems (already listed as "planned" in `registry.ts`).
@@ -35,6 +38,9 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 ## Change log
 - **2026-10-05**: Initial scaffold. Created schema, URL Shortener content, registry, diagram/mermaid libs, all 7 stage components, home page, README. Build and typecheck pass. All URL Shortener flow hops are validated against final-diagram edges. Client-side rendering has not yet been visually verified in a browser.
 
+- **2026-10-05 (later)**: Added optional `overview` and `communication` to the `Problem` schema and rendered them in `StageUnderstand` / `StageStartSimple`. Wrote Rate Limiter (6 steps, 7 flows), Phone Directory (6 steps, 9 flows) and Web Crawler (6 steps, 8 flows) and registered them. `typecheck` and `build` pass, and every flow hop was checked against final-diagram edges with a throwaway script. Node coordinates were chosen by hand to avoid overlaps and edge crossings but **have not been viewed in a browser**.
+
 ## Notes
+- Node positions: roughly 330 px between columns and 200+ px between rows, and an edge's straight line must not pass through a third node (no auto-layout, so check by eye).
 - When adding a flow hop that has no matching edge, add the edge in the relevant evolution delta rather than drawing a fake hop.
 - Keep this file's status and change log updated after each work session.

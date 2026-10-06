@@ -10,6 +10,35 @@ export function StageUnderstand({ problem }: { problem: Problem }) {
     <div>
       <StageHeader n={1} title="Understand the problem" question="What exactly are we building, and what would change the design?" />
 
+      {problem.overview && (
+        <div className="mb-8 rounded-xl border border-indigo-200 bg-indigo-50/40 p-6">
+          <Label tone="indigo">First, what is it?</Label>
+          <p className="text-lg leading-relaxed text-stone-800">{problem.overview.whatItIs}</p>
+          <div className="mt-5 grid gap-5 md:grid-cols-2">
+            <div>
+              <Label>What it does</Label>
+              <ul className="list-disc space-y-1 pl-4 text-sm text-stone-700">{problem.overview.whatItDoes.map((w) => <li key={w}>{w}</li>)}</ul>
+            </div>
+            <div>
+              <Label>Where you meet it</Label>
+              <ul className="list-disc space-y-1 pl-4 text-sm text-stone-700">{problem.overview.whereUsed.map((w) => <li key={w}>{w}</li>)}</ul>
+            </div>
+          </div>
+          <div className="mt-5 rounded-lg border-l-4 border-emerald-400 bg-white px-4 py-3">
+            <Label tone="green">The one idea to hold onto</Label>
+            <p className="text-sm text-stone-700">{problem.overview.coreIdea}</p>
+          </div>
+          {problem.overview.notToBeConfusedWith && (
+            <div className="mt-5">
+              <Label tone="amber">Not to be confused with</Label>
+              <ul className="space-y-1 text-sm text-stone-700">
+                {problem.overview.notToBeConfusedWith.map((n) => <li key={n.term}><span className="font-medium">{n.term}:</span> {n.difference}</li>)}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="mb-8 rounded-xl bg-stone-900 p-6 text-stone-100">
         <Label tone="amber">Interviewer</Label>
         <p className="text-lg leading-relaxed">“{problem.interviewQuestion}”</p>
