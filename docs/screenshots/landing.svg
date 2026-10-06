@@ -1,0 +1,44 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#F8FAFC"/>
+  <rect x="80" y="70" width="1240" height="760" rx="28" fill="white" stroke="#E7E5E4"/>
+  <rect x="120" y="120" width="420" height="52" rx="20" fill="#EEF2FF"/>
+  <text x="156" y="154" fill="#4338CA" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">SYSTEM DESIGN LEARNING PLATFORM</text>
+
+  <text x="120" y="270" fill="#18181B" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700">SysDesign Studio</text>
+  <text x="120" y="334" fill="#52525B" font-family="Arial, Helvetica, sans-serif" font-size="30">Learn to reason about systems, not just draw them.</text>
+
+  <g>
+    <rect x="120" y="390" width="170" height="42" rx="21" fill="#EEF2FF"/>
+    <text x="150" y="419" fill="#4338CA" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">What happens here?</text>
+    <rect x="310" y="390" width="220" height="42" rx="21" fill="#EEF2FF"/>
+    <text x="340" y="419" fill="#4338CA" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">Why this design?</text>
+    <rect x="550" y="390" width="180" height="42" rx="21" fill="#EEF2FF"/>
+    <text x="580" y="419" fill="#4338CA" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="600">What breaks next?</text>
+  </g>
+
+  <g>
+    <rect x="120" y="494" width="310" height="220" rx="22" fill="#FFFFFF" stroke="#E7E5E4"/>
+    <rect x="150" y="530" width="210" height="18" rx="9" fill="#E4E4E7"/>
+    <rect x="150" y="570" width="160" height="12" rx="6" fill="#E7E5E4"/>
+    <rect x="150" y="610" width="180" height="12" rx="6" fill="#E7E5E4"/>
+    <rect x="150" y="646" width="120" height="12" rx="6" fill="#E7E5E4"/>
+    <rect x="150" y="680" width="134" height="14" rx="7" fill="#A5B4FC"/>
+  </g>
+
+  <g>
+    <rect x="470" y="494" width="310" height="220" rx="22" fill="#FFFFFF" stroke="#E7E5E4"/>
+    <rect x="500" y="530" width="170" height="18" rx="9" fill="#DDD6FE"/>
+    <rect x="500" y="566" width="210" height="12" rx="6" fill="#E7E5E4"/>
+    <rect x="500" y="602" width="180" height="12" rx="6" fill="#E7E5E4"/>
+    <rect x="500" y="638" width="160" height="12" rx="6" fill="#E7E5E4"/>
+    <circle cx="660" cy="680" r="26" fill="#4338CA" opacity="0.9"/>
+  </g>
+
+  <g>
+    <rect x="820" y="494" width="310" height="220" rx="22" fill="#111827"/>
+    <text x="856" y="550" fill="#E5E7EB" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">INTERVIEW FLOW</text>
+    <text x="856" y="600" fill="#D1D5DB" font-family="Arial, Helvetica, sans-serif" font-size="22">Understand → Size → Start simple</text>
+    <text x="856" y="636" fill="#D1D5DB" font-family="Arial, Helvetica, sans-serif" font-size="22">Evolve → Flows → Deep dives</text>
+    <text x="856" y="672" fill="#D1D5DB" font-family="Arial, Helvetica, sans-serif" font-size="22">Defend</text>
+  </g>
+</svg>

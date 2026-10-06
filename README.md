@@ -1,5 +1,7 @@
 # SysDesign Studio
 
+> Learn to reason about systems, not just draw them.
+
 A polished learning app for system design interviews. It helps engineers reason through architecture decisions, trade-offs, bottlenecks, and failure modes instead of memorizing buzzwords.
 
 Built with Next.js, TypeScript, Tailwind CSS, and a content-driven problem model so each design lesson is easy to extend without touching the UI.
@@ -8,7 +10,17 @@ Built with Next.js, TypeScript, Tailwind CSS, and a content-driven problem model
 
 This project is created and maintained by Santosh Goteti.
 
-It is designed to help engineers build stronger system design instincts through guided reasoning, trade-off analysis, and evolution-based architecture thinking.
+## About
+
+SysDesign Studio is built for engineers who want to strengthen the mental models behind real systems:
+
+- why a component exists in the first place
+- what problem it solves under realistic load
+- which alternatives were considered and rejected
+- what breaks first as scale increases
+- how the design evolves from a simple starting point to a resilient system
+
+This repository turns those ideas into a guided interview-style learning journey.
 
 ## Why this project?
 
@@ -36,6 +48,10 @@ SysDesign Studio turns those ideas into guided design journeys.
 - Flow-based reasoning with write, read, and failure paths
 - Content-first architecture so new problems can be added without UI changes
 - Designed for senior engineers, platform engineers, backend developers, and interview prep
+
+## Screenshot
+
+![SysDesign Studio Landing Page](docs/screenshots/landing.svg)
 
 ## Tech stack
 
@@ -140,6 +156,18 @@ This project is intentionally content-driven. To add a design problem:
 3. Register it in `src/content/registry.ts`
 
 No UI changes are required for new problems.
+
+## Release checklist
+
+- [ ] Confirm the main app loads without runtime errors
+- [ ] Run `npm run build` successfully
+- [ ] Run `npm run typecheck` successfully
+- [ ] Verify homepage, problem routes, and diagram rendering are working
+- [ ] Check README and project links are accurate
+- [ ] Confirm LICENSE matches the intended project ownership
+- [ ] Add screenshots or demo assets if sharing publicly
+- [ ] Review commit history and final branch state
+- [ ] Tag a release version if publishing to a broader audience
 
 ## Notes
 
