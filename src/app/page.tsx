@@ -1,3 +1,4 @@
+// Author: Santosh Goteti
 import Link from "next/link";
 import { listProblems } from "@/content/registry";
 

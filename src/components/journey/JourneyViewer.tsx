@@ -1,4 +1,5 @@
 "use client";
+// Author: Santosh Goteti
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Problem } from "@/content/types";

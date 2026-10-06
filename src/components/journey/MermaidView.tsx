@@ -1,4 +1,5 @@
 "use client";
+// Author: Santosh Goteti
 import { useEffect, useId, useState } from "react";
 
 export function MermaidView({ code }: { code: string }) {

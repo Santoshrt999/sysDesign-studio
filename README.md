@@ -4,6 +4,12 @@ A polished learning app for system design interviews. It helps engineers reason 
 
 Built with Next.js, TypeScript, Tailwind CSS, and a content-driven problem model so each design lesson is easy to extend without touching the UI.
 
+## Author
+
+This project is created and maintained by Santosh Goteti.
+
+It is designed to help engineers build stronger system design instincts through guided reasoning, trade-off analysis, and evolution-based architecture thinking.
+
 ## Why this project?
 
 System design interviews are not about drawing fancy diagrams — they are about explaining:
@@ -141,14 +147,12 @@ The app follows a strict teaching structure where each problem evolves from a si
 
 ## License
 
-This project is currently unlicensed unless you add one explicitly.
+This project is licensed under the MIT License.
 
-If you want, you can add a license such as MIT later:
-
-```bash
-npx license mit
-```
+See the [LICENSE](LICENSE) file for the full license text.
 
 ---
 
 Made for engineers who want to get better at system design reasoning.
+
+© 2026 Santosh Goteti
