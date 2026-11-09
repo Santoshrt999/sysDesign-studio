@@ -3,9 +3,12 @@ import { urlShortener } from "./problems/url-shortener";
 import { rateLimiter } from "./problems/rate-limiter";
 import { phoneDirectory } from "./problems/phone-directory";
 import { webCrawler } from "./problems/web-crawler";
+import { videoStreaming } from "./problems/video-streaming";
+import { chatApp } from "./problems/chat-app";
+import { newsFeed } from "./problems/news-feed";
 
 /** Fully written problems. To add one: create problems/<slug>/index.ts and add it here. */
-const problems: Problem[] = [urlShortener, rateLimiter, phoneDirectory, webCrawler];
+const problems: Problem[] = [urlShortener, rateLimiter, phoneDirectory, webCrawler, videoStreaming, chatApp, newsFeed];
 
 const planned: Array<Omit<ProblemSummary, "status">> = [
   { slug: "rate-limiter", title: "Rate Limiter", tagline: "Token buckets, distributed counters, and fairness under contention", difficulty: "Medium" },

@@ -30,7 +30,8 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 
 ## Build order & status
 1. ✅ App shell + journey viewer + **URL Shortener** fully written (7 evolution steps v1→v7, 7 flows, 3 deep dives, trade-offs, follow-ups, mistakes). **Awaiting user review of teaching quality before continuing.**
-2. ✅ Rate Limiter, Phone Directory, Web Crawler written (with `overview` + `communication`). **Awaiting user review of teaching quality and visual check of diagrams.** Video Streaming is still "planned".
+2. ✅ Rate Limiter, Phone Directory, Web Crawler written (with `overview` + `communication`). **Awaiting user review of teaching quality and visual check of diagrams.**
+2b. ✅ Video Streaming, Chat App, News Feed written (with `overview` + `communication`, 6 steps / 9 flows / 3 deep dives each). **Awaiting user review and a visual check in the browser.**
 3. ⏳ Framework page, Building Blocks, Decision Trees, Scaling Cheat Sheet.
 4. ⏳ Practice mode (reveal-one-stage, drag-and-drop canvas, self-review checklist).
 5. ⏳ Remaining problems (already listed as "planned" in `registry.ts`).
@@ -40,6 +41,7 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 
 - **2026-10-05 (later)**: Added optional `overview` and `communication` to the `Problem` schema and rendered them in `StageUnderstand` / `StageStartSimple`. Wrote Rate Limiter (6 steps, 7 flows), Phone Directory (6 steps, 9 flows) and Web Crawler (6 steps, 8 flows) and registered them. `typecheck` and `build` pass, and every flow hop was checked against final-diagram edges with a throwaway script. Node coordinates were chosen by hand to avoid overlaps and edge crossings but **have not been viewed in a browser**.
 - **2026-11-09**: Added `/about` page (`src/app/about/page.tsx`): author credit (Santosh Goteti), purpose, teaching principles, the 7 stages, live problem count, stack, license, GitHub + LinkedIn links. Linked from the home page (top-right nav + under the About section). A footer credit was tried and removed in favour of this page.
+- **2026-11-09 (later)**: Wrote Video Streaming, Chat App and News Feed and registered them. A validation script (not committed; it compiles `src/content` with `tsc` and replays the deltas) confirmed for all three that every flow hop follows an edge, every delta refers to nodes and edges that exist, nodes don't overlap, and no edge's straight line passes within 10 px of a third node at any step. The same script flagged **existing** crossings in older problems, still unfixed: URL Shortener v6–v7 `cdn-regionB` crosses `lb` and `kv`; Phone Directory v5–v7 `ingest-db` crosses `queue`, and v7 `ingest-search` crosses `snap`. URL Shortener still has no `overview`/`communication`.
 
 ## Notes
 - Node positions: roughly 330 px between columns and 200+ px between rows, and an edge's straight line must not pass through a third node (no auto-layout, so check by eye).
