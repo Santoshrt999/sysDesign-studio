@@ -1,8 +1,9 @@
 // Local, single-user profile store: reads/writes data/profile.json (gitignored).
-// Only works under `next dev` / `next start` (needs a Node runtime with file access).
+// Only active in "file" storage mode (local development). In "browser" mode (any hosted deployment) it returns 404,
+// so a public site can never share one profile between visitors.
 import { promises as fs } from "fs";
 import path from "path";
-import type { ProfileFile } from "@/lib/progress/types";
+import { STORAGE_MODE, isProfileFile } from "@/lib/progress/storage";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -10,20 +11,10 @@ export const runtime = "nodejs";
 const DIR = path.join(process.cwd(), "data");
 const FILE = path.join(DIR, "profile.json");
 
-function isProfileFile(x: unknown): x is ProfileFile {
-  const f = x as ProfileFile;
-  return (
-    !!f &&
-    f.version === 1 &&
-    typeof f.profile?.name === "string" &&
-    f.profile.name.trim().length > 0 &&
-    Array.isArray(f.activityDays) &&
-    typeof f.problems === "object" &&
-    f.problems !== null
-  );
-}
+const disabled = () => new Response("Not found", { status: 404 });
 
 export async function GET() {
+  if (STORAGE_MODE !== "file") return disabled();
   try {
     const parsed: unknown = JSON.parse(await fs.readFile(FILE, "utf8"));
     return Response.json({ file: isProfileFile(parsed) ? parsed : null });
@@ -34,6 +25,7 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
+  if (STORAGE_MODE !== "file") return disabled();
   let body: unknown;
   try {
     body = await req.json();

@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import type { Profile } from "@/lib/progress/types";
+import { useProgress } from "@/lib/progress/ProgressProvider";
+import { BackupControls } from "./BackupControls";
 
 interface Props {
   initial?: Pick<Profile, "name" | "role" | "interviewDate">;
@@ -14,6 +16,8 @@ export function ProfileSetup({ initial, onSave, onCancel }: Props) {
   const [role, setRole] = useState(initial?.role ?? "");
   const [interviewDate, setInterviewDate] = useState(initial?.interviewDate ?? "");
   const editing = !!initial;
+  const { mode } = useProgress();
+  const where = mode === "browser" ? "Saved only in this browser" : "Stored only on this machine";
 
   const field = "mt-1 w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 outline-none focus:border-indigo-500 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100";
 
@@ -28,7 +32,7 @@ export function ProfileSetup({ initial, onSave, onCancel }: Props) {
     >
       <h1 className="text-2xl font-semibold text-stone-900 dark:text-stone-50">{editing ? "Edit profile" : "Create your profile"}</h1>
       <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-        {editing ? "Update your details." : "Stored only on this laptop. No password: it's just so the app can pick up where you left off."}
+        {editing ? "Update your details." : `${where}. No account or password: it's just so the app can pick up where you left off.`}
       </p>
       <label className="mt-5 block text-sm font-medium text-stone-700 dark:text-stone-300">
         Name
@@ -48,6 +52,12 @@ export function ProfileSetup({ initial, onSave, onCancel }: Props) {
         </button>
         {onCancel && <button type="button" onClick={onCancel} className="text-sm text-stone-500 hover:text-stone-800 dark:hover:text-stone-200">Cancel</button>}
       </div>
+      {!editing && (
+        <div className="mt-6 border-t border-stone-200 pt-4 dark:border-stone-800">
+          <p className="mb-2 text-sm text-stone-500 dark:text-stone-400">Studied on another device? Bring your progress with you.</p>
+          <BackupControls importOnly />
+        </div>
+      )}
     </form>
   );
 }

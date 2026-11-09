@@ -44,7 +44,7 @@ SysDesign Studio turns those ideas into guided design journeys.
   - Flows
   - Deep dives
   - Defend
-- Local profile with Netflix-style "continue where you left off": progress per problem, an automatic recap, your notes, streak and interview countdown (saved to `data/profile.json`, no login; light/dark toggle on the profile page)
+- Local profile with Netflix-style "continue where you left off": progress per problem, an automatic recap, your notes, streak and interview countdown (no login; light/dark toggle on the profile page). Running locally with `npm run dev`, progress is saved to `data/profile.json`. Any production build/deployment keeps it in each visitor's browser instead (`localStorage`), with Export/Import to back it up or move devices. Set `NEXT_PUBLIC_PROGRESS_STORAGE=file` or `browser` to override.
 - Visual architecture diagrams with highlighted changes
 - Flow-based reasoning with write, read, and failure paths
 - Content-first architecture so new problems can be added without UI changes

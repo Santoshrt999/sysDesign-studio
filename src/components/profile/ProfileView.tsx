@@ -7,10 +7,11 @@ import { ContinueHero } from "./ContinueHero";
 import { ProblemRow, type RowItem } from "./ProblemRow";
 import { ProfileSetup } from "./ProfileSetup";
 import { ThemeToggle } from "./ThemeToggle";
+import { BackupControls } from "./BackupControls";
 
 /** Netflix-style profile. The ☀️/🌙 theme applies to this page only (a .dark wrapper; the rest of the app stays light). */
 export function ProfileView({ problems }: { problems: ProblemOutline[] }) {
-  const { status, file, saveProfile, resetProblem, setTheme } = useProgress();
+  const { status, mode, file, saveProfile, resetProblem, setTheme } = useProgress();
   const [editing, setEditing] = useState(false);
   const dark = (file?.profile.theme ?? "dark") === "dark";
 
@@ -20,7 +21,11 @@ export function ProfileView({ problems }: { problems: ProblemOutline[] }) {
   } else if (status === "offline") {
     body = (
       <div className="mx-auto max-w-md py-24 text-center text-stone-600 dark:text-stone-300">
-        Your profile is saved by the local server. Start the app with <code className="rounded bg-stone-200 px-1 dark:bg-stone-800">npm run dev</code> and reload this page.
+        {mode === "file" ? (
+          <>Your profile is saved by the local server. Start the app with <code className="rounded bg-stone-200 px-1 dark:bg-stone-800">npm run dev</code> and reload this page.</>
+        ) : (
+          <>This browser is blocking site storage (private browsing, or cookies and site data turned off), so progress can&apos;t be saved here. Allow site data for this site and reload.</>
+        )}
       </div>
     );
   } else if (!file || editing) {
@@ -82,6 +87,16 @@ export function ProfileView({ problems }: { problems: ProblemOutline[] }) {
         <ProblemRow title="Continue learning" items={inProgress} today={today} onReset={resetProblem} />
         <ProblemRow title="Completed" items={completed} today={today} onReset={resetProblem} />
         <ProblemRow title="Not started" items={notStarted} today={today} onReset={resetProblem} />
+
+        <section className="mt-12 rounded-xl border border-stone-200 p-4 dark:border-stone-800">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-stone-500 dark:text-stone-400">Your data</h3>
+          <p className="mt-1 text-sm text-stone-600 dark:text-stone-300">
+            {mode === "browser"
+              ? "Your progress is saved only in this browser, never on a server. Export a backup to keep it safe, or to move it to another device or browser."
+              : "Your progress is saved to data/profile.json on this machine."}
+          </p>
+          <div className="mt-3"><BackupControls /></div>
+        </section>
       </>
     );
   }
