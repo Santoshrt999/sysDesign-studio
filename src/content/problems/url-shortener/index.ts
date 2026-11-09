@@ -17,6 +17,30 @@ export const urlShortener: Problem = {
   tagline: "TinyURL / bit.ly — a read-heavy key-value system where ID generation is the hard part",
   difficulty: "Medium",
 
+  overview: {
+    whatItIs:
+      "A URL shortener turns a long web address into a short one, like tny.io/aZ3k9Qx. When anyone opens the short link, the service looks up the original address and redirects the browser there in a few milliseconds.",
+    whatItDoes: [
+      "Creates a short, unique code for any long URL.",
+      "Redirects every click on that code to the original URL, fast and from anywhere in the world.",
+      "Lets links expire, and lets malicious links be taken down after they're created.",
+      "Stays up even when a cache node or a whole region fails, because broken links break other people's pages.",
+    ],
+    whereUsed: [
+      "bit.ly, TinyURL, t.co (every link on X), lnkd.in",
+      "Marketing campaigns, QR codes and SMS, where every character counts",
+      "Internal 'go links' (go/oncall) inside companies",
+      "Any product that shares links: invites, referral links, password-reset emails",
+    ],
+    coreIdea:
+      "It's a giant, read-heavy dictionary from short code to long URL, and the mapping never changes once created. So reads are served almost entirely from caches and the CDN, and the only genuinely hard part is generating short codes that are unique without every create having to coordinate.",
+    notToBeConfusedWith: [
+      { term: "DNS", difference: "DNS maps a hostname to an IP address. A shortener maps a path on its own domain to a full URL and answers with an HTTP redirect." },
+      { term: "Hashing the URL", difference: "A hash of the long URL is a tempting code, but truncated hashes collide, and the same URL always gets the same code (no per-user expiry or analytics). Codes come from a counter instead." },
+      { term: "CDN / reverse proxy", difference: "A CDN caches and serves content. The shortener only issues redirects; it uses a CDN to serve those redirects close to users." },
+    ],
+  },
+
   // ───────────────────────────── Stage 1 — Understand ─────────────────────────────
   interviewQuestion:
     "Design a URL shortening service like TinyURL. Users paste a long URL and get back a short link; anyone clicking the short link is redirected to the original.",
@@ -209,6 +233,49 @@ export const urlShortener: Problem = {
         "302 rather than 301 keeps us in the loop for expiry, takedown and future analytics. s-maxage lets OUR CDN cache it while browsers don't.",
     },
   ],
+
+  communication: {
+    rule:
+      "Both user-facing paths are synchronous: the creator is waiting for the short URL, and the browser is waiting for the redirect. Anything nobody waits for (safety scanning, analytics, cross-region replication) happens asynchronously. The ID allocator looks like it should be a per-request call, but it isn't: servers lease ranges, so it's called once per 100K creates.",
+    choices: [
+      {
+        interaction: "Client → API: create a short URL",
+        style: "sync-api",
+        why: "The creator is blocked until they have the short URL, and the work (allocate an ID locally, write one KV row) takes milliseconds.",
+        ifWrong: "Queuing the create and returning '202, your link is coming' gives the user nothing to paste. There's no slow work here worth decoupling.",
+      },
+      {
+        interaction: "Browser → CDN → API → cache/KV: redirect",
+        style: "sync-api",
+        why: "The browser can't go anywhere until it gets the Location header. Every hop has a tight deadline, and misses fall through edge → cache → KV synchronously.",
+        ifWrong: "A queue on the read path adds latency and helps nothing: there's always someone waiting at the end.",
+      },
+      {
+        interaction: "API server → ID allocator",
+        style: "sync-api",
+        why: "A synchronous call, but only once per leased range of 100K IDs. Codes are generated locally from the lease, so the allocator is off the per-request path.",
+        ifWrong: "Calling the allocator (or a database sequence) on every create makes one CP component the bottleneck and single point of failure for all writes.",
+      },
+      {
+        interaction: "Create → safety scanning (LinkCreated)",
+        style: "async-queue",
+        why: "Third-party reputation APIs are slow and flaky, and the creator shouldn't wait for them. A cheap local blocklist check stays inline; the deep scan goes through a queue and can block the link afterwards.",
+        ifWrong: "A synchronous scan ties create availability and latency to a vendor's API. If it's down, nobody can create links.",
+      },
+      {
+        interaction: "Region A KV → Region B KV (replication)",
+        style: "async-queue",
+        why: "Mappings are immutable and each region allocates from its own ID slice, so there's nothing to agree on. Asynchronous replication saves 70–200 ms per write.",
+        ifWrong: "Synchronous cross-region writes add an ocean round trip to every create, to protect against a few seconds of RPO in a regional disaster.",
+      },
+      {
+        interaction: "Redirect → click analytics (follow-up)",
+        style: "async-queue",
+        why: "Click events are published off the redirect path and aggregated downstream. The LinkCreated queue already gives us the backbone.",
+        ifWrong: "Incrementing a counter synchronously on each redirect makes viral links hot rows and slows the one path that must be fast.",
+      },
+    ],
+  },
 
   dataModel: [
     {
@@ -552,7 +619,7 @@ export const urlShortener: Problem = {
       delta: {
         addNodes: [
           { id: "cdn", label: "CDN / Edge", sub: "Geo-DNS + 100s of PoPs", kind: "edge", x: 220, y: 200 },
-          { id: "regionB", label: "Region B", sub: "full stack + KV replica", kind: "region", x: 1240, y: 320 },
+          { id: "regionB", label: "Region B", sub: "full stack + KV replica", kind: "region", x: 680, y: 600 },
         ],
         removeEdges: ["client-lb"],
         addEdges: [

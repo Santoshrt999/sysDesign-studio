@@ -498,7 +498,7 @@ export const phoneDirectory: Problem = {
         "A report isn't a write to a table, it's evidence that has to be deduped and weighted. So the API acknowledges with 202 and drops it on a queue keyed by number, and a merge worker turns many reports into one profile update. That also protects us from hot-partition writes during a spam campaign.",
       delta: {
         addNodes: [
-          { id: "queue", label: "Report queue", sub: "Kafka, keyed by number", kind: "queue", x: 1320, y: 200 },
+          { id: "queue", label: "Report queue", sub: "Kafka, keyed by number", kind: "queue", x: 1320, y: 40 },
           { id: "ingest", label: "Merge worker", sub: "dedupe · weight · merge", kind: "worker", x: 1650, y: 200 },
         ],
         addEdges: [
@@ -588,7 +588,7 @@ export const phoneDirectory: Problem = {
         "The last 100 ms is the mobile network, which I can't fix on the server. So the hottest 5 million numbers, about 100 MB, ship to the device as a nightly snapshot with daily deltas through a CDN. Half of lookups never leave the phone and keep working offline.",
       delta: {
         addNodes: [
-          { id: "snap", label: "Snapshot builder", sub: "nightly batch + deltas", kind: "worker", x: 1320, y: 400 },
+          { id: "snap", label: "Snapshot builder", sub: "nightly batch + deltas", kind: "worker", x: 330, y: 640 },
           { id: "cdn", label: "CDN / object store", sub: "snapshot + deltas", kind: "edge", x: 330, y: 420 },
         ],
         updateNodes: [{ id: "client", sub: "on-device snapshot (top 5M)" }],
