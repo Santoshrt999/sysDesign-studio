@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { buildRecap, clampPosition, daysAgo, isCompleted, percent, resumeHref, type ProblemOutline } from "@/lib/progress/logic";
+import { buildRecap, clampPosition, daysAgo, isCompleted, percent, quizHref, resumeHref, type ProblemOutline } from "@/lib/progress/logic";
+import { QUIZ_SIZE, UNLOCK_STAGE, bestScore, isUnlocked } from "@/lib/quiz/logic";
 import type { ProblemProgress } from "@/lib/progress/types";
 import { ProgressBar } from "./ProgressBar";
 
@@ -53,6 +54,26 @@ export function ContinueHero({ problem, progress, today }: { problem: ProblemOut
         <Link href={href} className="inline-flex items-center gap-2 rounded-lg bg-stone-900 px-6 py-2.5 font-semibold text-white hover:bg-stone-700 dark:bg-stone-50 dark:text-stone-900 dark:hover:bg-white">
           ▶ {done ? "Review" : "Resume"}
         </Link>
+        {problem.quiz && (isUnlocked(progress, "core") ? (
+          <Link
+            href={quizHref(problem.slug, clampPosition(problem, progress.position))}
+            className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 font-semibold text-white hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400"
+          >
+            🔓 Quiz
+            {(() => {
+              const best = bestScore(progress.quiz, "core");
+              return best !== null ? <span className="text-xs font-medium text-indigo-200 dark:text-indigo-100">best {best}/{QUIZ_SIZE}</span> : null;
+            })()}
+          </Link>
+        ) : (
+          <span
+            aria-disabled="true"
+            title={`Unlocks after Stage ${UNLOCK_STAGE.core + 1} (Flows)`}
+            className="inline-flex cursor-not-allowed items-center gap-2 rounded-lg px-5 py-2.5 font-semibold text-stone-400 ring-1 ring-stone-300 dark:text-stone-500 dark:ring-stone-700"
+          >
+            🔒 Quiz <span className="text-xs font-medium">after Stage {UNLOCK_STAGE.core + 1}</span>
+          </span>
+        ))}
         {recap.covered.length > 1 && (
           <button onClick={() => setExpanded((v) => !v)} className="rounded-lg px-4 py-2.5 text-sm font-medium text-stone-700 ring-1 ring-stone-300 hover:bg-white/60 dark:text-stone-200 dark:ring-stone-700 dark:hover:bg-stone-800">
             {expanded ? "Hide recap" : "Recap first"}

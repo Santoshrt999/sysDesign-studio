@@ -133,6 +133,8 @@ npm install
 npm run dev
 ```
 
+(Uses Turbopack. In development each page compiles the first time you open it, so the first click on a problem can take several seconds; later visits are fast. `npm run dev:webpack` uses the older bundler. A production build has no such delay.)
+
 Then open:
 
 ```text

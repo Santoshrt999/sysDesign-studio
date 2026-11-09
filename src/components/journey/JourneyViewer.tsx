@@ -6,8 +6,9 @@ import type { Problem } from "@/content/types";
 import { useProgress } from "@/lib/progress/ProgressProvider";
 import { clampPosition, resumeHref } from "@/lib/progress/logic";
 import type { Position, QuizLevel } from "@/lib/progress/types";
-import { LEVEL_NAMES, isUnlocked } from "@/lib/quiz/logic";
+import { isUnlocked } from "@/lib/quiz/logic";
 import { QuizDialog } from "@/components/quiz/QuizDialog";
+import { QuizUnlockedPopup } from "@/components/quiz/QuizUnlockedPopup";
 import { StageUnderstand } from "./StageUnderstand";
 import { StageSize } from "./StageSize";
 import { StageStartSimple } from "./StageStartSimple";
@@ -76,11 +77,11 @@ export function JourneyViewer({ problem }: { problem: Problem }) {
     trackPosition(slug, { stage });
   }, [ready, status, slug, stage, explicitStage, hasProgress, trackPosition]);
 
-  // ── Quiz: locked until Stage 5 is read; a toast announces the unlock while the reader is here.
+  // ── Quiz: locked until Stage 5 is read; a popup announces the unlock while the reader is here.
   const hasQuiz = !!problem.quiz?.length;
   const progress = file?.problems[slug];
   const coreUnlocked = isUnlocked(progress, "core");
-  const [toast, setToast] = useState<QuizLevel | null>(null);
+  const [unlocked, setUnlocked] = useState<QuizLevel | null>(null);
   const seenUnlock = useRef<Record<QuizLevel, boolean> | null>(null);
   useEffect(() => {
     if (!hasQuiz || status !== "ready") return;
@@ -90,13 +91,9 @@ export function JourneyViewer({ problem }: { problem: Problem }) {
     if (!before) return; // first observation after load: not an unlock event
     const level = (["interviewer", "core"] as const).find((l) => now[l] && !before[l]);
     if (!level || !problem.quiz?.some((q) => q.level === level)) return;
-    setToast(level);
+    setUnlocked(level);
   }, [hasQuiz, status, progress, problem.quiz]);
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(null), 9000);
-    return () => clearTimeout(t);
-  }, [toast]);
+  const closeUnlocked = useCallback(() => setUnlocked(null), []);
 
   // "Reread" from the quiz: go straight to the stage/step/flow a question came from.
   const [navKey, setNavKey] = useState(0);
@@ -211,12 +208,8 @@ export function JourneyViewer({ problem }: { problem: Problem }) {
         </div>
       </main>
 
-      {toast && (
-        <div role="status" className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-3 rounded-full bg-stone-900 py-2 pl-5 pr-2 text-sm text-white shadow-xl">
-          <span>🔓 {LEVEL_NAMES[toast]} unlocked for {problem.title}</span>
-          <button onClick={() => { setToast(null); setQuizOpen(true); }} className="rounded-full bg-indigo-500 px-3 py-1 font-medium hover:bg-indigo-400">Take it</button>
-          <button onClick={() => setToast(null)} aria-label="Dismiss" className="px-2 text-stone-400 hover:text-white">×</button>
-        </div>
+      {unlocked && !quizOpen && (
+        <QuizUnlockedPopup level={unlocked} title={problem.title} onClose={closeUnlocked} onTake={() => { setUnlocked(null); setQuizOpen(true); }} />
       )}
       {quizOpen && <QuizDialog problem={problem} onClose={() => setQuizOpen(false)} onJump={jump} />}
     </div>

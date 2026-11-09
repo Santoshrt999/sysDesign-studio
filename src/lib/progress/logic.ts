@@ -109,6 +109,12 @@ export function resumeHref(slug: string, pos: Position): string {
   return `/problems/${slug}${qs ? `?${qs}` : ""}#stage-${pos.stage + 1}`;
 }
 
+/** A resume link that also opens the quiz dialog on arrival. */
+export function quizHref(slug: string, pos: Position): string {
+  const [path, hash] = resumeHref(slug, pos).split("#");
+  return `${path}${path.includes("?") ? "&" : "?"}quiz=1#${hash}`;
+}
+
 function clip(s: string, max = 90): string {
   const t = s.replace(/\s+/g, " ").trim();
   if (t.length <= max) return t;
