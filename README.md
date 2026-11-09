@@ -44,6 +44,7 @@ SysDesign Studio turns those ideas into guided design journeys.
   - Flows
   - Deep dives
   - Defend
+- Local profile with Netflix-style "continue where you left off": progress per problem, an automatic recap, your notes, streak and interview countdown (saved to `data/profile.json`, no login; light/dark toggle on the profile page)
 - Visual architecture diagrams with highlighted changes
 - Flow-based reasoning with write, read, and failure paths
 - Content-first architecture so new problems can be added without UI changes

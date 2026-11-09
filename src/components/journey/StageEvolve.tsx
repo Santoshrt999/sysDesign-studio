@@ -5,10 +5,14 @@ import type { Problem } from "@/content/types";
 import { diagramAt } from "@/lib/diagram";
 import { ArchDiagram, type EdgeState, type NodeState } from "../diagram/ArchDiagram";
 import { Label, OptionCard, SayIt, StageHeader } from "../ui/primitives";
+import { useJourneyPosition } from "./JourneyPosition";
 
 export function StageEvolve({ problem }: { problem: Problem }) {
   const total = problem.evolution.length;
-  const [step, setStep] = useState(1); // number of evolution steps applied; 0 = v1
+  const position = useJourneyPosition();
+  const [step, setStep] = useState(position?.evolveStep ?? 1); // number of evolution steps applied; 0 = v1
+  const onEvolveStep = position?.onEvolveStep;
+  useEffect(() => { onEvolveStep?.(step); }, [step, onEvolveStep]);
   const state = useMemo(() => diagramAt(problem, step), [problem, step]);
   const current = step > 0 ? problem.evolution[step - 1] : undefined;
 

@@ -1,6 +1,7 @@
 // Author: Santosh Goteti
 import Link from "next/link";
 import { listProblems } from "@/content/registry";
+import { ProfileNavLink } from "@/components/profile/ProfileNavLink";
 
 const SECTIONS = ["The Framework", "Building Blocks", "Decision Trees", "Scaling Cheat Sheet", "Practice Mode"];
 
@@ -14,7 +15,8 @@ export default function Home() {
   const problems = listProblems();
   return (
     <main className="mx-auto max-w-6xl px-6 py-12">
-      <nav className="mb-4 flex justify-end text-sm">
+      <nav className="mb-4 flex justify-end gap-5 text-sm">
+        <ProfileNavLink className="font-medium text-indigo-600 hover:text-indigo-800" />
         <Link href="/about" className="font-medium text-stone-500 hover:text-indigo-700">About</Link>
       </nav>
 

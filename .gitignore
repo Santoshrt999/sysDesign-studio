@@ -26,3 +26,7 @@ Thumbs.db
 
 # Draft blog post
 docs/devto-post.md
+.superpowers/
+
+# Local profile and reading progress (written by /api/profile)
+data/

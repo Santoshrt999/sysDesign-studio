@@ -6,6 +6,7 @@ import { flowToSequence } from "@/lib/mermaid";
 import { ArchDiagram, type EdgeState, type NodeState } from "../diagram/ArchDiagram";
 import { Label, StageHeader } from "../ui/primitives";
 import { MermaidView } from "./MermaidView";
+import { useJourneyPosition } from "./JourneyPosition";
 
 const KIND_TONE: Record<Flow["kind"], string> = {
   write: "bg-violet-100 text-violet-700",
@@ -15,7 +16,10 @@ const KIND_TONE: Record<Flow["kind"], string> = {
 
 export function StageFlows({ problem }: { problem: Problem }) {
   const final = useMemo(() => diagramAt(problem, problem.evolution.length), [problem]);
-  const [flowId, setFlowId] = useState(problem.flows[0]?.id);
+  const position = useJourneyPosition();
+  const [flowId, setFlowId] = useState(position?.flowId ?? problem.flows[0]?.id);
+  const onFlow = position?.onFlow;
+  useEffect(() => { if (flowId) onFlow?.(flowId); }, [flowId, onFlow]);
   const flow = problem.flows.find((f) => f.id === flowId) ?? problem.flows[0];
   const [hop, setHop] = useState(0);
   const [playing, setPlaying] = useState(false);

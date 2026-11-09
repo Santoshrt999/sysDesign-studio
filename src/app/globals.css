@@ -8,3 +8,6 @@
 
 html { color-scheme: light; }
 body { background: #fafaf9; color: #1c1917; }
+
+/* dark: applies only inside a .dark wrapper (used on /profile only; the rest of the app is light). */
+@custom-variant dark (&:where(.dark, .dark *));
