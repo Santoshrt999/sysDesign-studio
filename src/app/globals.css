@@ -11,3 +11,75 @@ body { background: #fafaf9; color: #1c1917; }
 
 /* dark: applies only inside a .dark wrapper (used on /profile only; the rest of the app is light). */
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ───────── Home hero (dark, immersive) ───────── */
+@property --aurora-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+.hero-aurora {
+  background: conic-gradient(from var(--aurora-angle) at 50% 50%, #312e81, #0e7490, #4c1d95, #1e1b4b, #312e81);
+  filter: blur(90px);
+  mask-image: radial-gradient(closest-side, #000 30%, transparent 75%);
+  animation: aurora-spin 24s linear infinite;
+}
+@keyframes aurora-spin { to { --aurora-angle: 360deg; } }
+
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  transform: perspective(700px) rotateX(62deg);
+  transform-origin: bottom;
+  mask-image: linear-gradient(to top, #000 10%, transparent 85%);
+  animation: grid-drift 6s linear infinite;
+}
+@keyframes grid-drift { to { background-position: 0 56px; } }
+
+/* Spotlight that follows the cursor (--mx/--my set from JS, no re-render). */
+.hero-spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(520px circle at var(--mx, 70%) var(--my, 30%), rgba(129, 140, 248, 0.16), transparent 60%);
+  transition: background 0.2s;
+}
+
+.hero-gradient-text {
+  background: linear-gradient(100deg, #c7d2fe 0%, #67e8f9 35%, #a5b4fc 60%, #f0abfc 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 8s ease-in-out infinite alternate;
+}
+@keyframes gradient-pan { to { background-position: 100% center; } }
+
+.hero-shine {
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.7) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: shine 3.5s ease-in-out infinite;
+}
+@keyframes shine { 60%, 100% { transform: translateX(120%); } }
+
+/* Scroll-driven reveal (CSS-only, no JS). Browsers without support just show the content. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 28%;
+  }
+}
+@keyframes reveal {
+  from { opacity: 0; transform: translateY(28px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora, .hero-grid, .hero-gradient-text, .hero-shine, .reveal { animation: none !important; }
+  .hero-shine { display: none; }
+}

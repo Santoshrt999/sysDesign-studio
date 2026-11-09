@@ -36,6 +36,7 @@ SysDesign Studio turns those ideas into guided design journeys.
 
 ## Features
 
+- Immersive home page: a self-playing live architecture (URL Shortener grows from one server to a global CDN, a cache node fails and recovers) with request packets, synced captions and real numbers, plus animated stats and a "Continue" shortcut for returning readers. Pure SVG + CSS (no extra libraries), paused off-screen and still when "reduce motion" is on.
 - 7-stage interview learning flow
   - Understand
   - Size
@@ -45,10 +46,27 @@ SysDesign Studio turns those ideas into guided design journeys.
   - Deep dives
   - Defend
 - Local profile with Netflix-style "continue where you left off": progress per problem, an automatic recap, your notes, streak and interview countdown (no login; light/dark toggle on the profile page). Running locally with `npm run dev`, progress is saved to `data/profile.json`. Any production build/deployment keeps it in each visitor's browser instead (`localStorage`), with Export/Import to back it up or move devices. Set `NEXT_PUBLIC_PROGRESS_STORAGE=file` or `browser` to override.
+- Every problem includes a plain-language overview and a "sync API or queue?" guide for each interaction
 - Visual architecture diagrams with highlighted changes
 - Flow-based reasoning with write, read, and failure paths
 - Content-first architecture so new problems can be added without UI changes
 - Designed for senior engineers, platform engineers, backend developers, and interview prep
+
+## Problems
+
+Ready (each with 6 evolution steps, 7–9 animated flows including failure drills, and 3 deep dives):
+
+| Problem | Difficulty | Focus |
+|---|---|---|
+| URL Shortener | Medium | Read-heavy key-value system; ID generation without coordination |
+| Rate Limiter | Medium | Token buckets, distributed counters, fairness under contention |
+| Phone Directory | Medium | Caller lookup at massive scale |
+| Web Crawler | Hard | Politeness, dedupe, a frontier that isn't a plain queue |
+| Video Streaming | Hard | Upload pipeline, chunk-parallel transcoding, adaptive bitrate, CDN |
+| Chat App | Hard | Persistent connections, per-conversation ordering, offline delivery, group fan-out |
+| News Feed | Hard | Fan-out on write vs read, the celebrity problem, hydration, ranking |
+
+12 more are listed as "planned" on the home page (see Roadmap).
 
 ## Screenshot
 
@@ -69,19 +87,26 @@ SysDesign Studio turns those ideas into guided design journeys.
 ```bash
 src/
   app/
-    page.tsx
-    problems/[slug]/page.tsx
+    page.tsx                  # home: immersive hero + problem list
+    about/page.tsx            # about the project and author
+    profile/page.tsx          # Netflix-style profile and progress
+    api/profile/route.ts      # local file storage for progress (dev only; 404 in production)
+    problems/[slug]/page.tsx  # the 7-stage journey for one problem
   components/
-    journey/
-    diagram/
+    home/                     # Hero, LiveArchitecture, ContinueChip
+    journey/                  # JourneyViewer + one component per stage, notes panel
+    profile/                  # profile page pieces, theme toggle, export/import
+    diagram/                  # React Flow architecture diagram
     ui/
   content/
-    registry.ts
-    types.ts
-    problems/
+    registry.ts               # ready + planned problems
+    types.ts                  # the Problem schema
+    problems/<slug>/index.ts  # one file per problem (pure data)
   lib/
-    diagram.ts
-    mermaid.ts
+    diagram.ts                # replays evolution deltas
+    mermaid.ts                # sequence diagrams from flows
+    progress/                 # profile/progress types, pure logic, storage, client store
+docs/superpowers/             # design specs and implementation plans
 ```
 
 ## Quick start
@@ -157,6 +182,29 @@ This project is intentionally content-driven. To add a design problem:
 3. Register it in `src/content/registry.ts`
 
 No UI changes are required for new problems.
+
+## Roadmap / pending work
+
+**Review**
+- [ ] Teaching-quality review of all 7 problems by the author
+- [ ] Visual check of the Video Streaming, Chat App and News Feed diagrams in the browser
+- [ ] Phone-width check of the home hero, profile page and problem pages; check the hero with "reduce motion" on
+
+**Content**
+- [ ] 12 planned problems: Notification System, Unique ID Generator, Distributed KV Store, Search Autocomplete, Ride Sharing, File Storage & Sync, Payment System, Ticket Booking, Leaderboard, Distributed Message Queue, Stock Exchange, Proximity Service
+- [ ] Framework page, Building Blocks, Decision Trees, Scaling Cheat Sheet
+
+**Product**
+- [ ] Practice mode: reveal one stage at a time, drag-and-drop canvas, self-review checklist
+- [ ] Problem cards on the home page resume in-progress problems directly
+- [ ] Multiple profiles on one machine (local file mode); a hosted site already gives each browser its own
+- [ ] Optional sign-in (GitHub/Google) with cloud sync, only if users ask for it
+
+**Engineering & launch**
+- [ ] Choose a host (e.g. Vercel) and deploy; progress automatically uses browser storage in production
+- [ ] Turn the content validation script (flow hops follow edges, no overlapping nodes or crossing edges) into `npm run validate`
+- [ ] Decide on React Flow attribution (show it, or get React Flow Pro): a console warning appears today
+- [ ] Refresh screenshots and the demo GIF (they predate the hero and profile)
 
 ## Release checklist
 

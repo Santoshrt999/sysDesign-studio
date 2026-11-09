@@ -1,7 +1,7 @@
 // Author: Santosh Goteti
 import Link from "next/link";
-import { listProblems } from "@/content/registry";
-import { ProfileNavLink } from "@/components/profile/ProfileNavLink";
+import { getProblem, listProblems, readySlugs } from "@/content/registry";
+import { Hero, type HeroStats } from "@/components/home/Hero";
 
 const SECTIONS = ["The Framework", "Building Blocks", "Decision Trees", "Scaling Cheat Sheet", "Practice Mode"];
 
@@ -11,92 +11,87 @@ const ABOUT_POINTS = [
   { title: "Failure analysis", text: "Learn what breaks first, which assumptions fail under load, and what to do next." },
 ];
 
+const STAGES = ["Understand", "Size", "Start simple", "Evolve", "Flows", "Deep dives", "Defend"];
+
+/** Counted from content, so the numbers grow as problems are added. */
+function heroData() {
+  const ready = readySlugs().flatMap((s) => getProblem(s) ?? []);
+  const stats: HeroStats = {
+    problems: ready.length,
+    steps: ready.reduce((n, p) => n + p.evolution.length, 0),
+    flows: ready.reduce((n, p) => n + p.flows.length, 0),
+    failures: ready.reduce((n, p) => n + p.flows.filter((f) => f.kind === "failure").length, 0),
+  };
+  const titles = Object.fromEntries(ready.map((p) => [p.slug, p.title]));
+  return { stats, titles, first: { slug: ready[0].slug, title: ready[0].title } };
+}
+
 export default function Home() {
   const problems = listProblems();
+  const { stats, titles, first } = heroData();
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
-      <nav className="mb-4 flex justify-end gap-5 text-sm">
-        <ProfileNavLink className="font-medium text-indigo-600 hover:text-indigo-800" />
-        <Link href="/about" className="font-medium text-stone-500 hover:text-indigo-700">About</Link>
-      </nav>
+    <>
+      <Hero stats={stats} first={first} titles={titles} />
 
-      <section className="rounded-3xl border border-stone-200 bg-gradient-to-br from-indigo-50 via-white to-stone-100 p-8 shadow-sm">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-2xl">
-            <span className="inline-flex rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-700">
-              System design learning platform
-            </span>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">SysDesign Studio</h1>
-            <p className="mt-4 text-lg text-stone-600">
-              Learn to think in systems: why components exist, how designs evolve, and what breaks under pressure.
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2 text-sm">
-              {["What happens here?", "Why is it designed this way?", "What breaks next?"].map((q) => (
-                <span key={q} className="rounded-full bg-white px-3 py-1.5 text-indigo-700 shadow-sm ring-1 ring-stone-200">{q}</span>
+      <main className="mx-auto max-w-6xl px-6 py-14">
+        <section id="problems" className="scroll-mt-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">Problems</h2>
+              <p className="mt-1 text-stone-600">Each one walks the same seven stages an interview does.</p>
+            </div>
+            <ol className="flex flex-wrap gap-1.5 text-xs text-stone-500">
+              {STAGES.map((s, i) => (
+                <li key={s} className="rounded-full bg-stone-100 px-2.5 py-1"><span className="text-stone-400">{i + 1}</span> {s}</li>
               ))}
-            </div>
+            </ol>
           </div>
-
-          <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
-            <div className="rounded-xl bg-stone-900 p-4 text-left text-white">
-              <div className="text-xs uppercase tracking-[0.2em] text-stone-300">Interview flow</div>
-              <div className="mt-3 space-y-2 text-sm text-stone-200">
-                <div>Understand → Size → Start simple</div>
-                <div>Evolve → Flows → Deep dives</div>
-                <div>Defend</div>
-              </div>
-            </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {problems.map((p) =>
+              p.status === "ready" ? (
+                <Link key={p.slug} href={`/problems/${p.slug}`} className="reveal group rounded-xl border border-stone-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-lg hover:shadow-indigo-100">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-stone-900 group-hover:text-indigo-700">{p.title}</span>
+                    <span className="text-xs text-stone-400">{p.difficulty}</span>
+                  </div>
+                  <p className="mt-1 text-sm text-stone-600">{p.tagline}</p>
+                  <div className="mt-3 text-sm font-medium text-indigo-600">Start journey <span className="inline-block transition group-hover:translate-x-1">→</span></div>
+                </Link>
+              ) : (
+                <div key={p.slug} className="reveal rounded-xl border border-dashed border-stone-200 p-5 opacity-60">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-stone-700">{p.title}</span>
+                    <span className="text-[10px] uppercase tracking-wider text-stone-400">planned</span>
+                  </div>
+                  <p className="mt-1 text-sm text-stone-500">{p.tagline}</p>
+                </div>
+              ),
+            )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="mt-12">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">About</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
-          {ABOUT_POINTS.map((point) => (
-            <div key={point.title} className="rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
-              <div className="text-lg font-semibold text-stone-900">{point.title}</div>
-              <p className="mt-2 text-sm leading-6 text-stone-600">{point.text}</p>
-            </div>
-          ))}
-        </div>
-        <Link href="/about" className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
-          More about the project and its author →
-        </Link>
-      </section>
-
-      <section className="mt-12">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">Problems</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {problems.map((p) =>
-            p.status === "ready" ? (
-              <Link key={p.slug} href={`/problems/${p.slug}`} className="group rounded-xl border border-stone-200 bg-white p-5 transition hover:border-indigo-300 hover:shadow-md">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-stone-900 group-hover:text-indigo-700">{p.title}</span>
-                  <span className="text-xs text-stone-400">{p.difficulty}</span>
-                </div>
-                <p className="mt-1 text-sm text-stone-600">{p.tagline}</p>
-                <div className="mt-3 text-sm font-medium text-indigo-600">Start journey →</div>
-              </Link>
-            ) : (
-              <div key={p.slug} className="rounded-xl border border-dashed border-stone-200 p-5 opacity-60">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-stone-700">{p.title}</span>
-                  <span className="text-[10px] uppercase tracking-wider text-stone-400">planned</span>
-                </div>
-                <p className="mt-1 text-sm text-stone-500">{p.tagline}</p>
+        <section className="mt-16">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">About</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-3">
+            {ABOUT_POINTS.map((point) => (
+              <div key={point.title} className="reveal rounded-2xl border border-stone-200 bg-white p-5 shadow-sm">
+                <div className="text-lg font-semibold text-stone-900">{point.title}</div>
+                <p className="mt-2 text-sm leading-6 text-stone-600">{point.text}</p>
               </div>
-            ),
-          )}
-        </div>
-      </section>
+            ))}
+          </div>
+          <Link href="/about" className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
+            More about the project and its author →
+          </Link>
+        </section>
 
-      <section className="mt-12">
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">Coming next</h2>
-        <div className="flex flex-wrap gap-2">
-          {SECTIONS.map((s) => <span key={s} className="rounded-lg border border-dashed border-stone-300 px-3 py-1.5 text-sm text-stone-500">{s}</span>)}
-        </div>
-      </section>
-    </main>
+        <section className="mt-12">
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-stone-500">Coming next</h2>
+          <div className="flex flex-wrap gap-2">
+            {SECTIONS.map((s) => <span key={s} className="rounded-lg border border-dashed border-stone-300 px-3 py-1.5 text-sm text-stone-500">{s}</span>)}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
