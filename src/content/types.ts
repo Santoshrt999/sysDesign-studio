@@ -183,6 +183,24 @@ export interface CommunicationGuide {
   choices: CommunicationChoice[];
 }
 
+export type QuizLevel = "core" | "interviewer";
+
+/** One multiple-choice reasoning question. Every option says why it wins or loses. */
+export interface QuizQuestion {
+  /** Stable id: progress refers to it, so never reuse one for a different question */
+  id: string;
+  level: QuizLevel;
+  kind: "numbers" | "decision" | "what-breaks" | "failure" | "sync-or-queue" | "pushback";
+  prompt: string;
+  options: Array<{ text: string; why: string }>;
+  /** Index of the correct option, as written (options are shuffled when shown) */
+  answer: number;
+  /** The takeaway, one or two sentences */
+  explanation: string;
+  /** Where to reread: 0-based stage, plus an evolution step (evolveStep N shows evolution[N-1]) or a flow */
+  ref: { stage: number; evolveStep?: number; flowId?: string };
+}
+
 export interface Problem {
   slug: string;
   title: string;
@@ -219,6 +237,8 @@ export interface Problem {
   followUps: FollowUp[];
   mistakes: string[];
   redFlags: string[];
+  /** Optional quiz pool: core questions unlock after Stage 5, interviewer questions after Stage 7 */
+  quiz?: QuizQuestion[];
 }
 
 export interface ProblemSummary {

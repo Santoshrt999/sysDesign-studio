@@ -5,7 +5,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { completeStage, emptyProgress, localDay, recordActivity, recordPosition } from "./logic";
 import { BROWSER_KEY, progressStorage, type StorageMode } from "./storage";
-import type { Position, Profile, ProfileFile, ProblemProgress, Theme } from "./types";
+import { recordAttempt } from "@/lib/quiz/logic";
+import type { Position, Profile, ProfileFile, ProblemProgress, QuizAttempt, Theme } from "./types";
 
 type Status = "loading" | "ready" | "offline";
 
@@ -20,12 +21,14 @@ interface ProgressApi {
   trackPosition(slug: string, pos: Partial<Position>): void;
   markStageRead(slug: string, stage: number): void;
   setNote(slug: string, note: string): void;
+  recordQuiz(slug: string, attempt: QuizAttempt): void;
   resetProblem(slug: string): void;
   setTheme(theme: Theme): void;
 }
 
 const Ctx = createContext<ProgressApi | null>(null);
 const SAVE_DEBOUNCE_MS = 800;
+const RETRY_MS = 3000;
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<Status>("loading");
@@ -38,8 +41,14 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     if (timer.current) { clearTimeout(timer.current); timer.current = null; }
     if (!dirty.current || !latest.current) return;
     dirty.current = false;
-    progressStorage.save(latest.current, { keepalive }).catch(() => { dirty.current = true; });
+    progressStorage.save(latest.current, { keepalive }).catch(() => {
+      // e.g. a 503 while the dev server recompiles: retry shortly rather than waiting for the next change
+      dirty.current = true;
+      if (!timer.current) timer.current = setTimeout(() => flushRef.current(), RETRY_MS);
+    });
   }, []);
+  const flushRef = useRef(flush);
+  flushRef.current = flush;
 
   useEffect(() => {
     let cancelled = false;
@@ -117,6 +126,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     (slug, stage) => updateProblem(slug, (p, now) => completeStage(p, stage, now)), [updateProblem]);
   const setNote = useCallback<ProgressApi["setNote"]>(
     (slug, note) => updateProblem(slug, (p, now) => ({ ...p, note, lastVisited: now })), [updateProblem]);
+  const recordQuiz = useCallback<ProgressApi["recordQuiz"]>(
+    (slug, attempt) => updateProblem(slug, (p, now) => ({ ...p, quiz: recordAttempt(p.quiz, attempt), lastVisited: now })), [updateProblem]);
   const resetProblem = useCallback<ProgressApi["resetProblem"]>((slug) => update((f) => {
     const problems = { ...f.problems };
     delete problems[slug];
@@ -126,8 +137,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     (theme) => update((f) => ({ ...f, profile: { ...f.profile, theme } })), [update]);
 
   const api = useMemo<ProgressApi>(
-    () => ({ status, mode: progressStorage.mode, file, replaceFile, saveProfile, trackPosition, markStageRead, setNote, resetProblem, setTheme }),
-    [status, file, replaceFile, saveProfile, trackPosition, markStageRead, setNote, resetProblem, setTheme],
+    () => ({ status, mode: progressStorage.mode, file, replaceFile, saveProfile, trackPosition, markStageRead, setNote, recordQuiz, resetProblem, setTheme }),
+    [status, file, replaceFile, saveProfile, trackPosition, markStageRead, setNote, recordQuiz, resetProblem, setTheme],
   );
 
   return <Ctx.Provider value={api}>{children}</Ctx.Provider>;

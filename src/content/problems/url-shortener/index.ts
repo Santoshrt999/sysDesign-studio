@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * URL Shortener (TinyURL / bit.ly)
@@ -981,4 +982,7 @@ export const urlShortener: Problem = {
     "Ignoring failure modes: what happens when the cache, a DB node, or a region dies.",
     "Claiming 'exactly-once' delivery from a queue without idempotency.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

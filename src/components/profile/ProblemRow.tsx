@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { clampPosition, daysAgo, isCompleted, percent, resumeHref, type ProblemOutline } from "@/lib/progress/logic";
 import type { ProblemProgress } from "@/lib/progress/types";
+import { QUIZ_SIZE, bestScore, isUnlocked } from "@/lib/quiz/logic";
 import { ProgressBar } from "./ProgressBar";
 
 export interface RowItem {
@@ -21,6 +22,16 @@ export function ProblemRow({ title, items, today, onReset }: { title: string; it
       </div>
     </section>
   );
+}
+
+function QuizLine({ progress }: { progress: ProblemProgress }) {
+  const core = bestScore(progress.quiz, "core");
+  const pro = bestScore(progress.quiz, "interviewer");
+  const text = core !== null
+    ? `Quiz best ${core}/${QUIZ_SIZE}${pro !== null ? ` · interviewer ${pro}/${QUIZ_SIZE}` : ""}`
+    : isUnlocked(progress, "core") ? "🔓 Quiz ready" : "🔒 Quiz after Stage 5";
+  const tone = core === null && isUnlocked(progress, "core") ? "text-indigo-600 dark:text-indigo-300 font-medium" : "text-stone-500 dark:text-stone-400";
+  return <p className={`mt-1.5 text-xs ${tone}`}>{text}</p>;
 }
 
 function ProblemCard({ problem, progress, today, onReset }: RowItem & { today: string; onReset(slug: string): void }) {
@@ -50,6 +61,7 @@ function ProblemCard({ problem, progress, today, onReset }: RowItem & { today: s
               <span>{done ? "Done · review?" : `${progress.completedStages.length}/7 stages`}</span>
               <span>{n === 0 ? "today" : n === 1 ? "yesterday" : `${n} days ago`}</span>
             </div>
+            {problem.quiz && <QuizLine progress={progress} />}
             {progress.note && <p className="mt-2 truncate text-xs italic text-amber-700 dark:text-amber-300">✎ {progress.note}</p>}
           </>
         )}

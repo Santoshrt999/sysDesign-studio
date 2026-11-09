@@ -21,6 +21,28 @@ export interface ProblemProgress {
   note: string;
   firstVisited: string;
   lastVisited: string;
+  /** Quiz history (optional so older profiles and backups stay valid) */
+  quiz?: QuizProgress;
+}
+
+export type QuizLevel = "core" | "interviewer";
+
+export interface QuizAttempt {
+  at: string;
+  level: QuizLevel;
+  /** Question ids asked, in order */
+  ids: string[];
+  /** The subset answered correctly */
+  correct: string[];
+}
+
+export interface QuizProgress {
+  /** Most recent last; capped */
+  attempts: QuizAttempt[];
+  /** Every question id ever asked */
+  seen: string[];
+  /** Ids whose latest answer was wrong (they come back first) */
+  wrong: string[];
 }
 
 export type Position = ProblemProgress["position"];

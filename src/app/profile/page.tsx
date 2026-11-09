@@ -24,6 +24,9 @@ function outlines(): ProblemOutline[] {
       evolution: p.evolution.map((s) => ({ version: s.version, title: s.title })),
       flows: p.flows.map((f) => ({ id: f.id, name: f.name })),
       deepDives: p.deepDives.map((d) => ({ title: d.title })),
+      quiz: p.quiz?.length
+        ? { core: p.quiz.filter((q) => q.level === "core").length, interviewer: p.quiz.filter((q) => q.level === "interviewer").length }
+        : undefined,
     }];
   });
 }

@@ -16,6 +16,8 @@ export interface ProblemOutline {
   evolution: Array<{ version: string; title: string }>;
   flows: Array<{ id: string; name: string }>;
   deepDives: Array<{ title: string }>;
+  /** Quiz pool sizes per level, when the problem has a quiz */
+  quiz?: { core: number; interviewer: number };
 }
 
 export const STAGE_NAMES = ["Understand", "Size", "Start simple", "Evolve", "Flows", "Deep dives", "Defend"] as const;

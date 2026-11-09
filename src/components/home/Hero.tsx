@@ -59,7 +59,7 @@ function RotatingWord() {
   );
 }
 
-export function Hero({ stats, first, titles }: { stats: HeroStats; first: { slug: string; title: string }; titles: Record<string, string> }) {
+export function Hero({ stats, first, titles, quizSlugs }: { stats: HeroStats; first: { slug: string; title: string }; titles: Record<string, string>; quizSlugs: string[] }) {
   const ref = useRef<HTMLElement>(null);
   // Cursor spotlight: CSS variables updated on pointer move (no re-render).
   const onMove = (e: PointerEvent<HTMLElement>) => {
@@ -130,7 +130,7 @@ export function Hero({ stats, first, titles }: { stats: HeroStats; first: { slug
             </motion.div>
 
             <motion.div {...rise(0.3)} className="mt-4">
-              <ContinueChip titles={titles} />
+              <ContinueChip titles={titles} quizSlugs={quizSlugs} />
             </motion.div>
 
             <motion.dl {...rise(0.36)} className="mt-10 grid max-w-lg grid-cols-4 gap-4 border-t border-white/10 pt-6">

@@ -23,15 +23,16 @@ function heroData() {
     failures: ready.reduce((n, p) => n + p.flows.filter((f) => f.kind === "failure").length, 0),
   };
   const titles = Object.fromEntries(ready.map((p) => [p.slug, p.title]));
-  return { stats, titles, first: { slug: ready[0].slug, title: ready[0].title } };
+  const quizSlugs = ready.filter((p) => p.quiz?.length).map((p) => p.slug);
+  return { stats, titles, quizSlugs, first: { slug: ready[0].slug, title: ready[0].title } };
 }
 
 export default function Home() {
   const problems = listProblems();
-  const { stats, titles, first } = heroData();
+  const { stats, titles, quizSlugs, first } = heroData();
   return (
     <>
-      <Hero stats={stats} first={first} titles={titles} />
+      <Hero stats={stats} first={first} titles={titles} quizSlugs={quizSlugs} />
 
       <main className="mx-auto max-w-6xl px-6 py-14">
         <section id="problems" className="scroll-mt-6">
