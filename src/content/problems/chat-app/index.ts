@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * Chat App (WhatsApp / Messenger-style)
@@ -986,4 +987,7 @@ export const chatApp: Problem = {
     "Stateless gateways that somehow know where every user is without a registry.",
     "Exactly-once delivery promised without explaining how retries are deduplicated.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

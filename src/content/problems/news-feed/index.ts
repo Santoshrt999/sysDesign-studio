@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * News Feed (Twitter / Facebook / Instagram home timeline)
@@ -940,4 +941,7 @@ export const newsFeed: Problem = {
     "Exact, synchronous like counters on viral posts.",
     "Treating the timeline cache as the source of truth.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

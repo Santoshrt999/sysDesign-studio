@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * Video Streaming (YouTube / Netflix-style)
@@ -988,4 +989,7 @@ export const videoStreaming: Problem = {
     "Exact, transactional view counts on the playback path.",
     "Ignoring storage growth (~1 PB/day) and cost tiers.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

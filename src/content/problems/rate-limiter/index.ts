@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * Rate Limiter
@@ -904,4 +905,7 @@ export const rateLimiter: Problem = {
     "A single global counter for all callers, with no thought for hot keys.",
     "Rate limiting only on the client side.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

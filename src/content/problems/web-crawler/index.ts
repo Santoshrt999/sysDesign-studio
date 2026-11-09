@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * Web Crawler
@@ -961,4 +962,7 @@ export const webCrawler: Problem = {
     "Treating freshness as 'recrawl everything every day'.",
     "Ignoring SSRF: a crawler follows links to internal addresses.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };

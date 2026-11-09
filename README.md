@@ -46,7 +46,7 @@ SysDesign Studio turns those ideas into guided design journeys.
   - Deep dives
   - Defend
 - Local profile with Netflix-style "continue where you left off": progress per problem, an automatic recap, your notes, streak and interview countdown (no login; light/dark toggle on the profile page). Running locally with `npm run dev`, progress is saved to `data/profile.json`. Any production build/deployment keeps it in each visitor's browser instead (`localStorage`), with Export/Import to back it up or move devices. Set `NEXT_PUBLIC_PROGRESS_STORAGE=file` or `browser` to override.
-- Per-problem quiz (URL Shortener so far): 5 reasoning questions per attempt (what breaks, why an option lost, what a number implies, sync call or queue). The core quiz unlocks after Stage 5 (Flows) and an "Interviewer round" after Stage 7. Each new attempt is at least 35% new, missed questions come back, options are shuffled, and every answer links back to the stage, step or flow to reread.
+- Per-problem quiz (all 7 problems, 166 questions): 5 reasoning questions per attempt (what breaks, why an option lost, what a number implies, sync call or queue). The core quiz unlocks after Stage 5 (Flows) and an "Interviewer round" after Stage 7. Each new attempt is at least 35% new, missed questions come back, options are shuffled, and every answer links back to the stage, step or flow to reread.
 - Every problem includes a plain-language overview and a "sync API or queue?" guide for each interaction
 - Visual architecture diagrams with highlighted changes
 - Flow-based reasoning with write, read, and failure paths
@@ -197,7 +197,6 @@ No UI changes are required for new problems.
 
 **Content**
 - [ ] 12 planned problems: Notification System, Unique ID Generator, Distributed KV Store, Search Autocomplete, Ride Sharing, File Storage & Sync, Payment System, Ticket Booking, Leaderboard, Distributed Message Queue, Stock Exchange, Proximity Service
-- [ ] Quiz pools for the other 6 problems (about 15 core + 8 interviewer questions each); URL Shortener's needs the author's review first
 - [ ] Framework page, Building Blocks, Decision Trees, Scaling Cheat Sheet
 
 **Product**

@@ -1,4 +1,5 @@
 import type { Problem } from "../../types";
+import { quiz } from "./quiz";
 
 /**
  * Phone Directory (caller-ID / reverse lookup, Truecaller-style)
@@ -972,4 +973,7 @@ export const phoneDirectory: Problem = {
     "A relational database with LIKE queries for name search at billions of rows.",
     "No plan for a hot key, such as a viral spam number.",
   ],
+
+  // ───────────────────────────── Quiz ─────────────────────────────
+  quiz,
 };
