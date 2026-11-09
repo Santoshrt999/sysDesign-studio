@@ -39,6 +39,7 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 - **2026-10-05**: Initial scaffold. Created schema, URL Shortener content, registry, diagram/mermaid libs, all 7 stage components, home page, README. Build and typecheck pass. All URL Shortener flow hops are validated against final-diagram edges. Client-side rendering has not yet been visually verified in a browser.
 
 - **2026-10-05 (later)**: Added optional `overview` and `communication` to the `Problem` schema and rendered them in `StageUnderstand` / `StageStartSimple`. Wrote Rate Limiter (6 steps, 7 flows), Phone Directory (6 steps, 9 flows) and Web Crawler (6 steps, 8 flows) and registered them. `typecheck` and `build` pass, and every flow hop was checked against final-diagram edges with a throwaway script. Node coordinates were chosen by hand to avoid overlaps and edge crossings but **have not been viewed in a browser**.
+- **2026-11-09**: Added `/about` page (`src/app/about/page.tsx`): author credit (Santosh Goteti), purpose, teaching principles, the 7 stages, live problem count, stack, license, GitHub + LinkedIn links. Linked from the home page (top-right nav + under the About section). A footer credit was tried and removed in favour of this page.
 
 ## Notes
 - Node positions: roughly 330 px between columns and 200+ px between rows, and an edge's straight line must not pass through a third node (no auto-layout, so check by eye).

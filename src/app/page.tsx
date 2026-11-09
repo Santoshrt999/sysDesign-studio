@@ -14,6 +14,10 @@ export default function Home() {
   const problems = listProblems();
   return (
     <main className="mx-auto max-w-6xl px-6 py-12">
+      <nav className="mb-4 flex justify-end text-sm">
+        <Link href="/about" className="font-medium text-stone-500 hover:text-indigo-700">About</Link>
+      </nav>
+
       <section className="rounded-3xl border border-stone-200 bg-gradient-to-br from-indigo-50 via-white to-stone-100 p-8 shadow-sm">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-2xl">
@@ -54,6 +58,9 @@ export default function Home() {
             </div>
           ))}
         </div>
+        <Link href="/about" className="mt-4 inline-block text-sm font-medium text-indigo-600 hover:text-indigo-800">
+          More about the project and its author →
+        </Link>
       </section>
 
       <section className="mt-12">
