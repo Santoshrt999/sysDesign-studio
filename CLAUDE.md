@@ -3,6 +3,7 @@
 Teaching app for system design interviews. It teaches design *reasoning*: why each component exists, how the design evolves, and what breaks next. It is not a coding app. The user is a senior Java/banking/microservices engineer, so content should go deep on trade-offs and failure modes and skip definitions.
 
 ## Commands
+- `./start.sh` (drag into a terminal): one-step launcher. Finds Node (nvm/fnm/volta/mise/asdf/system; `.nvmrc` = 22), runs `npm ci` only if `node_modules` is missing, picks a free port from 3000, opens the browser. **Default is fast mode:** `next build` into `.next-prod` (only when `src`/config files are newer than `.next-prod/BUILD_ID`) and then `next start` with `NEXT_PUBLIC_PROGRESS_STORAGE=file`, so pages answer in ~5–30 ms and progress still goes to `data/profile.json`. `--dev` / `--webpack` run the dev server instead. `next.config.mjs` reads `NEXT_DIST_DIR`, so this build never touches dev's `.next`. The script restores `next-env.d.ts` after building.
 - `npm run dev`: dev server at http://localhost:3000 (Turbopack). The first visit to a page compiles it: measured cold, a problem page took ~18 s with Turbopack vs ~50 s with webpack (`npm run dev:webpack`), and ~1 s after that. Production builds are static and prefetched, so this is dev-only.
 - `npm run build`: production build (run before claiming work is done)
 - `npm run typecheck`: `tsc --noEmit`
@@ -63,6 +64,8 @@ Next.js 15 (App Router) + TypeScript + Tailwind v4 (`@tailwindcss/postcss`, conf
 - **2026-11-09 (quiz popup + profile button)**: The unlock toast is now a centered popup ("Core quiz enabled": Take the quiz / Keep reading). The profile's Continue panel has a Quiz button next to Resume: locked ("after Stage 5") until Stage 5 is read, then it opens the quiz at the saved position. Checked in a production build: locked button → resume → cross Stage 5 → popup → profile shows 🔓 Quiz → it opens the dialog on the problem; closing leaves the reader at their stage.
 
 - **2026-11-09 (quiz pools + dev speed)**: Wrote quiz pools for Rate Limiter, Phone Directory, Web Crawler, Video Streaming, Chat App and News Feed (15–16 core + 8 interviewer each), from each problem's numbers, decisions, flows and trade-offs. The validation script passed for all 7 (unique ids across problems, refs valid, core refs ≤ Stage 5, 300 simulated attempts per level). Production build passes; Chat App's pool checked in the browser. `npm run dev` now uses Turbopack (first compile of a problem page ~18 s vs ~50 s with webpack).
+
+- **2026-11-11 (launcher + latency)**: Added `start.sh` and `.nvmrc`. Dev-mode requests were taking 13–58 s because the machine (8 GB RAM) was swapping: 11.4 of 12 GB swap was in use and the dev server's resident memory was ~4 MB. The app code wasn't the cause (mermaid is already lazy; problem pages are SSG). Fix: the launcher serves a production build by default. Measured on the same machine: every route 4–28 ms, a warm launch to first response ~2 s, and a rebuild ~70 s (only after code changes).
 
 ## Notes
 - Node positions: roughly 330 px between columns and 200+ px between rows, and an edge's straight line must not pass through a third node (no auto-layout, so check by eye).
